@@ -1,0 +1,46 @@
+services:
+  # Django Backend Web Service
+  - type: web
+    name: electioncart-backend
+    runtime: python
+    plan: starter  # Change to 'free' for free tier (with sleep)
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn election_cart.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: DJANGO_SECRET_KEY
+        sync: false  # Set manually in Render dashboard
+      - key: DEBUG
+        value: False
+      - key: DJANGO_ENVIRONMENT
+        value: production
+      - key: ALLOWED_HOSTS
+        value: lapoelectioncart.com,www.lapoelectioncart.com,api.lapoelectioncart.com
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://lapoelectioncart.com,https://www.lapoelectioncart.com
+      - key: DATABASE_URL
+        fromDatabase:
+          name: electioncart-db
+          property: connectionString
+      - key: RAZORPAY_KEY_ID
+        sync: false  # Set manually in Render dashboard
+      - key: RAZORPAY_KEY_SECRET
+        sync: false  # Set manually in Render dashboard
+      - key: CLOUDINARY_CLOUD_NAME
+        value: dqxyp7emm
+      - key: CLOUDINARY_API_KEY
+        value: "927929797298285"
+      - key: CLOUDINARY_API_SECRET
+        sync: false  # Set manually in Render dashboard
+      - key: SENTRY_DSN
+        value: https://c53e3b0f954bb47c1b8e2683a9a324d8@o4510300508782597.ingest.us.sentry.io/4510300511600640
+      - key: FIREBASE_CREDENTIALS_PATH
+        value: firebase-credentials.json
+
+databases:
+  # PostgreSQL Database
+  - name: electioncart-db
+    plan: starter  # Change to 'free' for 90-day free trial
+    databaseName: electioncart
+    user: electioncart
