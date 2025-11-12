@@ -480,6 +480,31 @@ class ManualOrderCustomerSerializer(serializers.Serializer):
     city = serializers.CharField(max_length=100, required=False, allow_blank=True)
     state = serializers.CharField(max_length=100, required=False, allow_blank=True)
     pincode = serializers.CharField(max_length=10, required=False, allow_blank=True)
+    
+    # Kerala-specific location fields
+    panchayath = serializers.CharField(max_length=100, required=False, allow_blank=True)
+    district = serializers.ChoiceField(
+        choices=[
+            ('thiruvananthapuram', 'Thiruvananthapuram'),
+            ('kollam', 'Kollam'),
+            ('pathanamthitta', 'Pathanamthitta'),
+            ('alappuzha', 'Alappuzha'),
+            ('kottayam', 'Kottayam'),
+            ('idukki', 'Idukki'),
+            ('ernakulam', 'Ernakulam'),
+            ('thrissur', 'Thrissur'),
+            ('palakkad', 'Palakkad'),
+            ('malappuram', 'Malappuram'),
+            ('kozhikode', 'Kozhikode'),
+            ('wayanad', 'Wayanad'),
+            ('kannur', 'Kannur'),
+            ('kasaragod', 'Kasaragod'),
+        ],
+        required=False,
+        allow_blank=True
+    )
+    ward_number = serializers.CharField(max_length=10, required=False, allow_blank=True)
+    notes = serializers.CharField(required=False, allow_blank=True)
 
 
 class ManualOrderItemSerializer(serializers.Serializer):

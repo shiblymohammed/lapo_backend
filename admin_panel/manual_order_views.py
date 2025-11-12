@@ -80,7 +80,11 @@ def create_manual_order(request):
                     'email': customer_data.get('email', ''),
                     'role': 'customer',
                     'is_active': True,
-                    'username': customer_data['phone']  # Use phone as username
+                    'username': customer_data['phone'],  # Use phone as username
+                    'panchayath': customer_data.get('panchayath', ''),
+                    'district': customer_data.get('district', ''),
+                    'ward_number': customer_data.get('ward_number', ''),
+                    'notes': customer_data.get('notes', ''),
                 }
             )
             
@@ -90,6 +94,14 @@ def create_manual_order(request):
                     customer.first_name = customer_data['name']
                 if customer_data.get('email'):
                     customer.email = customer_data['email']
+                if customer_data.get('panchayath'):
+                    customer.panchayath = customer_data['panchayath']
+                if customer_data.get('district'):
+                    customer.district = customer_data['district']
+                if customer_data.get('ward_number'):
+                    customer.ward_number = customer_data['ward_number']
+                if customer_data.get('notes'):
+                    customer.notes = customer_data['notes']
                 customer.save()
             
             # 2. Calculate total amount
