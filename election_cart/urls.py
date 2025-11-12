@@ -99,9 +99,19 @@ def health_check(request):
         return JsonResponse(response_data, status=503)
 
 
+def warmup(request):
+    """Warmup endpoint to prevent cold starts"""
+    return JsonResponse({
+        'status': 'warm',
+        'message': 'Service is ready',
+        'timestamp': timezone.now().isoformat()
+    }, status=200)
+
+
 urlpatterns = [
     # Health check endpoint (no authentication required)
     path('health/', health_check, name='health-check'),
+    path('warmup/', warmup, name='warmup'),
     
     path('admin/', admin.site.urls),
     path('api/auth/', include('authentication.urls')),

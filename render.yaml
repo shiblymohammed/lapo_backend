@@ -5,7 +5,7 @@ services:
     runtime: python
     plan: free
     buildCommand: "./build.sh"
-    startCommand: "gunicorn election_cart.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --threads 2 --timeout 120"
+    startCommand: "gunicorn election_cart.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --threads 2 --timeout 120 --keep-alive 5 --max-requests 1000 --max-requests-jitter 50"
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
@@ -19,6 +19,8 @@ services:
         value: lapoelectioncart.com,www.lapoelectioncart.com,api.lapoelectioncart.com,lapo-backend.onrender.com
       - key: CORS_ALLOWED_ORIGINS
         value: https://lapoelectioncart.com,https://www.lapoelectioncart.com,https://admin.lapoelectioncart.com
+      - key: CORS_ALLOW_ALL_ORIGINS
+        value: False
       - key: DATABASE_URL
         fromDatabase:
           name: electioncart-db
