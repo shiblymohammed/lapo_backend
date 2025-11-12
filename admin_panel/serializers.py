@@ -525,8 +525,8 @@ class CreateManualOrderSerializer(serializers.Serializer):
         choices=['phone_call', 'whatsapp', 'walk_in', 'email', 'referral', 'other']
     )
     payment_status = serializers.ChoiceField(
-        choices=['pending', 'partial', 'paid', 'cod'],
-        default='pending'
+        choices=['unpaid', 'pending', 'partial', 'paid', 'cod', 'refunded'],
+        default='unpaid'
     )
     payment_method = serializers.ChoiceField(
         choices=['cash', 'upi', 'bank_transfer', 'card', 'cheque', 'other'],
