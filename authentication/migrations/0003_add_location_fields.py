@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('authentication', '0002_alter_customuser_firebase_uid_and_more'),
+        ('authentication', '0002_alter_customuser_phone_number'),
     ]
 
     operations = [
