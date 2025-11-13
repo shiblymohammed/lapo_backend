@@ -27,6 +27,7 @@ from .views import (
     reorder_popular_campaigns,
     download_order_invoice,
     delete_product_image_view,
+    update_customer_info,
 )
 # Import manual order views
 from .manual_order_views import (
@@ -59,6 +60,7 @@ urlpatterns = [
     path('orders/<int:order_id>/update-payment-status/', update_payment_status, name='update-payment-status'),
     path('orders/<int:order_id>/record-payment/', record_payment, name='record-payment'),
     path('customers/search/', search_customers, name='search-customers'),
+    path('customers/<int:user_id>/update/', update_customer_info, name='update-customer-info'),
     path('products/for-order/', get_products_for_order, name='products-for-order'),
     
     # Staff management endpoints

@@ -27,9 +27,10 @@ class AdminOrderListView(generics.ListAPIView):
     """
     GET /api/admin/orders/
     List all orders with filtering by status and assigned staff
+    Accessible by both Admin and Staff users
     """
     serializer_class = AdminOrderListSerializer
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated, IsAdminOrStaff]
     pagination_class = None  # Disable pagination
     
     def get_queryset(self):
@@ -102,9 +103,10 @@ class AdminOrderDetailView(generics.RetrieveAPIView):
     """
     GET /api/admin/orders/{id}/
     Get detailed order information including resources and checklist
+    Accessible by both Admin and Staff users
     """
     serializer_class = AdminOrderDetailSerializer
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated, IsAdminOrStaff]
     queryset = Order.objects.all().select_related(
         'user', 'assigned_to', 'payment_history'
     ).prefetch_related(
@@ -1215,3 +1217,65 @@ def delete_product_image_view(request, pk):
         {'message': 'Image deleted successfully'},
         status=status.HTTP_204_NO_CONTENT
     )
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated, IsAdmin])
+def update_customer_info(request, user_id):
+    """
+    PUT /api/admin/customers/{user_id}/update/
+    Update customer information (name, phone, location details)
+    
+    Body:
+    {
+      "name": "John Doe",
+      "phone": "+919876543210",
+      "panchayath": "Thiruvananthapuram Corporation",
+      "district": "thiruvananthapuram",
+      "ward_number": "42",
+      "notes": "VIP customer"
+    }
+    """
+    user = get_object_or_404(CustomUser, id=user_id)
+    
+    # Update fields
+    if 'name' in request.data:
+        user.first_name = request.data['name']
+    
+    if 'phone' in request.data:
+        # Check if phone number is already taken by another user
+        phone = request.data['phone']
+        if CustomUser.objects.filter(phone_number=phone).exclude(id=user_id).exists():
+            return Response({
+                'success': False,
+                'message': 'Phone number already exists'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        user.phone_number = phone
+    
+    if 'panchayath' in request.data:
+        user.panchayath = request.data['panchayath']
+    
+    if 'district' in request.data:
+        user.district = request.data['district']
+    
+    if 'ward_number' in request.data:
+        user.ward_number = request.data['ward_number']
+    
+    if 'notes' in request.data:
+        user.notes = request.data['notes']
+    
+    user.save()
+    
+    return Response({
+        'success': True,
+        'message': 'Customer information updated successfully',
+        'user': {
+            'id': user.id,
+            'name': user.first_name,
+            'phone': user.phone_number,
+            'panchayath': user.panchayath,
+            'district': user.district,
+            'ward_number': user.ward_number,
+            'notes': user.notes,
+        }
+    })
